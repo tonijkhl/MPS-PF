@@ -8,34 +8,35 @@
 #define LN298N_IN4 4
 
 // LEDs
-#define DRIVE_LED 8
-#define REVERSE_LED 9
+#define DRIVE_LED 12
+#define REVERSE_LED 13
 
 // __________________________ BUZZER && HC-SR04 __________________________
 // Pins for buzzer
-#define BUZZER_PIN 3 // Active buzzer VCC connected here, GND to Arduino GND
+#define BUZZER_PIN 3
 
 // Pins for HC-SR04
-#define TRIG_PIN 9
-#define ECHO_PIN 10
+#define TRIG_PIN 8
+#define ECHO_PIN 9
 
 // Max detection range for beeping speed
-#define MAX_DISTANCE 50 // cm
+#define MAX_DISTANCE 200 // cm
 #define MIN_DISTANCE 2  // cm
 
 // __________________________ BLUETOOTH __________________________
 // HC-06
+char incomingValue;
 
 void setup()
 {
-  // ________ MOTORS SETUP ________
+  // ________ MOTORS && LEDs SETUP ________
   pinMode(LN298N_IN1, OUTPUT);
   pinMode(LN298N_IN2, OUTPUT);
   pinMode(LN298N_IN3, OUTPUT);
   pinMode(LN298N_IN4, OUTPUT);
 
   pinMode(DRIVE_LED, OUTPUT);
-  //pinMode(REVERSE_LED, OUTPUT);
+  pinMode(REVERSE_LED, OUTPUT);
 
   // ________ BUZZER && HC-SR04 SETUP ________
   pinMode(BUZZER_PIN, OUTPUT);
@@ -49,18 +50,35 @@ void setup()
 
 void loop()
 {
- beeping ();
- testCar();
+  // Start beeping
+  beeping ();
+
+  // Check if data is available from Bluetooth
+  if (Serial.available() > 0)
+  {
+    incomingValue = Serial.read(); // Read one character
+
+    if (incomingValue == 'U') { drive(); }
+    if (incomingValue == 'L') { leftTurn(); }
+    if (incomingValue == 'R') { rightTurn(); }
+    if (incomingValue == 'D') { reverse(); }
+
+    if (incomingValue == 'u' || incomingValue == 'l' || incomingValue == 'r' || incomingValue == 'd')
+    {
+      stopCar();
+    }
+  }
+  // testCar();
 }
 
 void drive()
 {
-  digitalWrite(LN298N_IN1, HIGH);
-  digitalWrite(LN298N_IN2, LOW);
-  digitalWrite(LN298N_IN3, HIGH);
-  digitalWrite(LN298N_IN4, LOW);
+  digitalWrite(LN298N_IN1, LOW);
+  digitalWrite(LN298N_IN2, HIGH);
+  digitalWrite(LN298N_IN3, LOW);
+  digitalWrite(LN298N_IN4, HIGH);
 
-  digitalWrite(DRIVE_LED, LOW);
+  digitalWrite(DRIVE_LED, HIGH);
 }
 
 void stopCar()
@@ -70,7 +88,8 @@ void stopCar()
   digitalWrite(LN298N_IN3, LOW);
   digitalWrite(LN298N_IN4, LOW);
 
-  digitalWrite(DRIVE_LED, HIGH);
+  digitalWrite(DRIVE_LED, LOW);
+  digitalWrite(REVERSE_LED, LOW);
 }
 
 void rightTurn()
@@ -89,6 +108,15 @@ void leftTurn()
   digitalWrite(LN298N_IN4, LOW);
 }
 
+void reverse()
+{
+  digitalWrite(LN298N_IN1, HIGH);
+  digitalWrite(LN298N_IN2, LOW);
+  digitalWrite(LN298N_IN3, HIGH);
+  digitalWrite(LN298N_IN4, LOW);
+
+  digitalWrite(REVERSE_LED, HIGH);
+}
 
 // TEST
 void testCar()
@@ -103,6 +131,9 @@ void testCar()
   delay(1000);
 
   rightTurn();
+  delay(1000);
+
+  reverse();
   delay(1000);
 }
 
