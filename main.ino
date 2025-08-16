@@ -75,8 +75,8 @@ void drive()
 {
   digitalWrite(LN298N_IN1, LOW);
   digitalWrite(LN298N_IN2, HIGH);
-  digitalWrite(LN298N_IN3, LOW);
-  digitalWrite(LN298N_IN4, HIGH);
+  digitalWrite(LN298N_IN3, HIGH);
+  digitalWrite(LN298N_IN4, LOW);
 
   digitalWrite(DRIVE_LED, HIGH);
 }
@@ -96,24 +96,24 @@ void rightTurn()
 {
   digitalWrite(LN298N_IN1, HIGH);
   digitalWrite(LN298N_IN2, LOW);
-  digitalWrite(LN298N_IN3, LOW);
-  digitalWrite(LN298N_IN4, HIGH);
+  digitalWrite(LN298N_IN3, HIGH);
+  digitalWrite(LN298N_IN4, LOW);
 }
 
 void leftTurn()
 {
   digitalWrite(LN298N_IN1, LOW);
   digitalWrite(LN298N_IN2, HIGH);
-  digitalWrite(LN298N_IN3, HIGH);
-  digitalWrite(LN298N_IN4, LOW);
+  digitalWrite(LN298N_IN3, LOW);
+  digitalWrite(LN298N_IN4, HIGH);
 }
 
 void reverse()
 {
   digitalWrite(LN298N_IN1, HIGH);
   digitalWrite(LN298N_IN2, LOW);
-  digitalWrite(LN298N_IN3, HIGH);
-  digitalWrite(LN298N_IN4, LOW);
+  digitalWrite(LN298N_IN3, LOW);
+  digitalWrite(LN298N_IN4, HIGH);
 
   digitalWrite(REVERSE_LED, HIGH);
 }
