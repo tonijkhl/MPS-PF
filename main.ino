@@ -20,9 +20,11 @@
 #define ECHO_PIN 9
 
 // Max detection range for beeping speed
-#define MAX_DISTANCE 200 // cm
+#define MAX_DISTANCE 100 // cm
 #define MIN_DISTANCE 2  // cm
 
+long duration;
+int distance;
 // __________________________ BLUETOOTH __________________________
 // HC-06
 char incomingValue;
@@ -58,7 +60,7 @@ void loop()
   {
     incomingValue = Serial.read(); // Read one character
 
-    if (incomingValue == 'U') { drive(); }
+    if (incomingValue == 'U' && distance >= 15) { drive(); }
     if (incomingValue == 'L') { leftTurn(); }
     if (incomingValue == 'R') { rightTurn(); }
     if (incomingValue == 'D') { reverse(); }
@@ -98,6 +100,8 @@ void rightTurn()
   digitalWrite(LN298N_IN2, LOW);
   digitalWrite(LN298N_IN3, HIGH);
   digitalWrite(LN298N_IN4, LOW);
+  
+  digitalWrite(REVERSE_LED, HIGH);
 }
 
 void leftTurn()
@@ -106,6 +110,8 @@ void leftTurn()
   digitalWrite(LN298N_IN2, HIGH);
   digitalWrite(LN298N_IN3, LOW);
   digitalWrite(LN298N_IN4, HIGH);
+  
+  digitalWrite(DRIVE_LED, HIGH);
 }
 
 void reverse()
@@ -139,8 +145,6 @@ void testCar()
 
 void beeping ()
 {
-    long duration;
-  int distance;
 
   // Send trigger pulse
   digitalWrite(TRIG_PIN, LOW);
@@ -164,11 +168,15 @@ void beeping ()
     int beepDelay = map(distance, MIN_DISTANCE, MAX_DISTANCE, 5, 1000);
 
     digitalWrite(BUZZER_PIN, LOW);  // Buzzer ON
-    delay(50);                      // Beep length
+    delay(50);                     // Beep length
     digitalWrite(BUZZER_PIN, HIGH); // Buzzer OFF
     delay(beepDelay);               // Delay based on distance
   } else {
     digitalWrite(BUZZER_PIN, HIGH); // Silent if far
     delay(100);
+  }
+
+  if (distance <= 15){
+        digitalWrite(REVERSE_LED, HIGH);
   }
 }
